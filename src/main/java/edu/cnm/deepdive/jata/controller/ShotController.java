@@ -1,10 +1,14 @@
 package edu.cnm.deepdive.jata.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.cnm.deepdive.jata.model.entity.Shot;
 import edu.cnm.deepdive.jata.model.entity.User;
 import edu.cnm.deepdive.jata.model.entity.UserGame;
 import edu.cnm.deepdive.jata.service.AbstractGameService;
 import edu.cnm.deepdive.jata.service.AbstractUserService;
+import edu.cnm.deepdive.jata.view.ShotViews;
+import edu.cnm.deepdive.jata.view.UserGameView;
+import edu.cnm.deepdive.jata.view.UserView;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -34,6 +38,7 @@ public class ShotController {
   }
 
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @JsonView(ShotViews.Summary.class)
   public List<Shot> post(@PathVariable UUID key, @Valid @RequestBody List<Shot> shots) {
     return gameService.submitShots(key, shots, userService.getCurrentUser());
 //    URI location = WebMvcLinkBuilder.linkTo(

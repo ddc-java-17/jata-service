@@ -25,6 +25,6 @@ public interface ShipLocationRepository extends JpaRepository<ShipLocation, Long
    * @param userGame
    * @return
    */
-  @Query("SELECT sl.shipCoordX AS x, sl.shipCoordY AS y FROM ShipLocation AS sl WHERE sl.shipNumber = :number AND sl.userGame = :userGame")
+  @Query("SELECT sl.location.x AS x, sl.location.y AS y FROM ShipLocation AS sl WHERE sl.shipNumber = :number AND sl.userGame = :userGame")
   ShipValid findShipLocationByShipNumberAndUserGame(int number, UserGame userGame);
 }

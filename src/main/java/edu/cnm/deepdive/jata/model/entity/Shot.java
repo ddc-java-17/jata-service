@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.cnm.deepdive.jata.model.Location;
+import edu.cnm.deepdive.jata.view.ShotViews;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -33,6 +36,7 @@ import org.springframework.lang.NonNull;
 )
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder({""})
+@JsonView(ShotViews.Summary.class)
 public class Shot {
 
   @NonNull
@@ -46,6 +50,7 @@ public class Shot {
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name = "from_user_game_id")
   @JsonProperty(access = Access.READ_ONLY)
+  @JsonView(ShotViews.Detailed.class)
   private UserGame fromUser;
 
   @NonNull
@@ -64,8 +69,11 @@ public class Shot {
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @JsonProperty(access = Access.READ_ONLY)
+  @JsonView(ShotViews.Detailed.class)
   private Instant timestamp;
 
+  @OneToOne(mappedBy = "shot", fetch = FetchType.EAGER)
+  private ShotStatus status;
 
   /**
    * Returns the unique ID of this shot
@@ -135,14 +143,7 @@ public class Shot {
   }
 
   public boolean isHit() {
-    return toUser
-        .getLocations()
-        .stream()
-        .anyMatch((shipLocation) -> {
-          Location loc = shipLocation.getLocation();
-          return loc.getX() == location.getX()
-              && loc.getY() == location.getY();
-        });
+    return status.isHit();
   }
 
   @Override
@@ -157,14 +158,8 @@ public class Shot {
     if (this == obj) {
       equals = true;
     } else if (obj instanceof Shot other) {
-      if (this.id != null && this.id.equals(other.id)) {
-        equals = true;
-      } else if (this.id == null && other.id == null) {
-        equals = (this.toUser.equals(other.toUser)
-            && this.location.equals(other.location));
-      } else {
-        equals = false;
-      }
+      equals = (this.toUser.equals(other.toUser)
+          && this.location.equals(other.location));
     } else {
       equals = false;
     }

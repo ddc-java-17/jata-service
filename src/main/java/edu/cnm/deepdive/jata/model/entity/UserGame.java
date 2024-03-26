@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
+import edu.cnm.deepdive.jata.view.ShotViews;
+import edu.cnm.deepdive.jata.view.UserGameView;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,6 +39,7 @@ import org.springframework.lang.NonNull;
 })
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder({"user_game_id"})
+@JsonView({UserGameView.Summary.class, ShotViews.Summary.class})
 public class UserGame {
 
   @NonNull
@@ -59,7 +63,6 @@ public class UserGame {
   @NonNull
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name = "game_id", nullable = false, updatable = false)
-  @JsonProperty(access = Access.READ_ONLY)
   @JsonIgnore
   private Game game;
 
@@ -76,6 +79,7 @@ public class UserGame {
   @OneToMany(mappedBy = "toUser", fetch = FetchType.EAGER,
       cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonProperty(access = Access.READ_ONLY)
+  @JsonView(UserGameView.Detailed.class)
   private final List<Shot> toShots = new LinkedList<>();
 
   @OneToMany(mappedBy = "player", fetch = FetchType.LAZY)
@@ -173,8 +177,19 @@ public class UserGame {
   }
 
   @JsonProperty("myLocations")
+  @JsonView(UserGameView.Detailed.class)
   public List<ShipLocation> getMyLocations() {
     return locations;
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
   }
 
   @PrePersist

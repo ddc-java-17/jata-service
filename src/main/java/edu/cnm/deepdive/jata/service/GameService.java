@@ -71,10 +71,8 @@ public class GameService implements AbstractGameService {
   }
 
   private static void ValidateShot(Game game, Shot shot) throws InvalidShotPlacementException {
-    if (shot.getShotCoordX() > game.getBoardSizeX()
-    || shot.getShotCoordX() < 1
-    || shot.getShotCoordY() > game.getBoardSizeY()
-    || shot.getShotCoordY() < 1)
+    if (shot.getLocation().getX() > game.getBoardSizeX()
+    || shot.getLocation().getY() > game.getBoardSizeY())
     {
       throw new InvalidShotPlacementException("Invalid shot");
     }
@@ -124,15 +122,15 @@ public class GameService implements AbstractGameService {
    */
   private static void ValidateShipLocationAndBoardEdge(ShipLocation location, Game game) {
     // test versus board edges
-    if (location.getShipCoordX() > game.getBoardSizeX()
-        || location.getShipCoordY() > game.getBoardSizeY()) {
+    if (location.getLocation().getX() > game.getBoardSizeX()
+        || location.getLocation().getY() > game.getBoardSizeY()) {
       throw new InvalidShipLocationException("Ships must be placed on the board");
     }
     // test versus other ships
-    if (hits[location.getShipCoordX()][location.getShipCoordY()]) {
+    if (hits[location.getLocation().getX()][location.getLocation().getY()]) {
       throw new InvalidShipLocationException("Ships must not intersect each other");
     } else {
-      hits[location.getShipCoordX()][location.getShipCoordY()] = true;
+      hits[location.getLocation().getX()][location.getLocation().getY()] = true;
     }
   }
 

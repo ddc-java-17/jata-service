@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
+import edu.cnm.deepdive.jata.view.ShotViews;
+import edu.cnm.deepdive.jata.view.UserGameView;
+import edu.cnm.deepdive.jata.view.UserView;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,6 +43,7 @@ import org.springframework.lang.NonNull;
 @Table(name = "user_profile")
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder({"key", "created", "modified", "displayName"})
+@JsonView({UserView.External.class, UserGameView.Summary.class, ShotViews.Summary.class})
 public class User {
 
   @Id
@@ -58,6 +63,7 @@ public class User {
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @JsonProperty(access = Access.READ_ONLY)
+  @JsonView(UserView.Internal.class)
   private Instant created;
 
   @NonNull
@@ -65,6 +71,7 @@ public class User {
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @JsonProperty(access = Access.READ_ONLY)
+  @JsonView(UserView.Internal.class)
   private Instant modified;
 
   @NonNull

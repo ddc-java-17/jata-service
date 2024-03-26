@@ -1,7 +1,9 @@
 package edu.cnm.deepdive.jata.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import edu.cnm.deepdive.jata.model.entity.User;
 import edu.cnm.deepdive.jata.service.AbstractUserService;
+import edu.cnm.deepdive.jata.view.UserView;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -38,6 +40,7 @@ public class UserController {
    * @return user
    */
   @GetMapping(path = "/me")
+  @JsonView(UserView.Internal.class)
   public User get() {
     return userService.getCurrentUser();
   }
@@ -52,6 +55,7 @@ public class UserController {
   @PutMapping(path = "/me",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @JsonView(UserView.Internal.class)
   public User put(@RequestBody User user) {
     return userService.updateUser(user, userService.getCurrentUser());
   }
@@ -64,6 +68,7 @@ public class UserController {
    * @return user The {@link User} instance.
    */
   @GetMapping(path = "/{key}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @JsonView(UserView.External.class)
   public User getUser(@PathVariable UUID key) {
     return userService.getUser(key);
   }

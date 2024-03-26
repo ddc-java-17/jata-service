@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import edu.cnm.deepdive.jata.model.Location;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,8 +32,6 @@ import org.springframework.lang.NonNull;
 public class ShipLocation {
 
   public static final int MIN_SHIP_NUMBER = 1;
-  public static final int MIN_X_COORD = 1;
-  public static final int MIN_Y_COORD = 1;
   @NonNull
   @Id
   @GeneratedValue
