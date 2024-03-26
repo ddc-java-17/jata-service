@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import edu.cnm.deepdive.jata.model.Location;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,7 +21,8 @@ import jakarta.validation.constraints.NotEmpty;
 import org.springframework.lang.NonNull;
 
 /**
- * This class contains a single ship of some type.  Each row represents a single point on the ship.  Ships size is determined by the number of rows in the table
+ * This class contains a single ship of some type.  Each row represents a single point on the ship.
+ * Ships size is determined by the number of rows in the table
  */
 @Entity
 @Table(indexes = @Index(columnList = "ship_id, shipNumber"))
@@ -52,13 +54,7 @@ public class ShipLocation {
 
   @Column(nullable = false, updatable = true)
   @JsonProperty(access = Access.READ_WRITE)
-  @Min(MIN_X_COORD)
-  private int shipCoordX;
-
-  @Column(nullable = false, updatable = true)
-  @JsonProperty(access = Access.READ_WRITE)
-  @Min(MIN_Y_COORD)
- private int shipCoordY;
+  private Location location;
 
   /**
    * Returns the ID of the ship
@@ -82,6 +78,7 @@ public class ShipLocation {
 
   /**
    * Annotates this ship with its associated user via UserGame
+   *
    * @param userGame
    */
   public void setUserGame(@NonNull UserGame userGame) {
@@ -106,44 +103,11 @@ public class ShipLocation {
     this.shipNumber = shipNumber;
   }
 
-  /**
-   * Returns the x-coordinate of a single point on the ship
-   *
-   * @return
-   */
-  public int getShipCoordX() {
-    return shipCoordX;
+  public Location getLocation() {
+    return location;
   }
 
-  /**
-   * Annotates the x-coordinate of a single point on the ship
-   *
-   * @param xCoord
-   */
-  public void setShipCoordX(int xCoord) {
-    this.shipCoordX = xCoord;
+  public void setLocation(Location location) {
+    this.location = location;
   }
-
-  /**
-   * Returns the y-coordinate of a single point on the ship
-   *
-   * @return
-   */
-  public int getShipCoordY() {
-    return shipCoordY;
-  }
-
-  /**
-   * Annotates the y-coordinate of a single point on the ship
-   *
-   * @param yCoord
-   */
-  public void setShipCoordY(int yCoord) {
-    this.shipCoordY = yCoord;
-  }
-
-//  public int[] getCoordinates(int[2] coordinates){
-//    this.coordinates[0] = getShipCoordX();
-//    this.coordinates[1] = getShipCoordY();
-//  }
 }

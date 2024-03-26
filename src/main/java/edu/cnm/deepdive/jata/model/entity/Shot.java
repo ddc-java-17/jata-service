@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import edu.cnm.deepdive.jata.model.Location;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -53,13 +54,10 @@ public class Shot {
   @JsonProperty(access = Access.READ_WRITE)
   private UserGame toUser;
 
-  @Column(nullable = false, updatable = true)
+  @NonNull
+  @Column(nullable = false, updatable = false)
   @JsonProperty(access = Access.READ_WRITE)
-  private int shotCoordX;
-
-  @Column(nullable = false, updatable = true)
-  @JsonProperty(access = Access.READ_WRITE)
-  private int shotCoordY;
+  private Location location;
 
   @NonNull
   @Column(nullable = false, updatable = false)
@@ -67,7 +65,6 @@ public class Shot {
   @Temporal(TemporalType.TIMESTAMP)
   @JsonProperty(access = Access.READ_ONLY)
   private Instant timestamp;
-
 
 
   /**
@@ -118,41 +115,13 @@ public class Shot {
     this.toUser = toUser;
   }
 
-
-  /**
-   * Returns the x-coordinate of this shot
-   *
-   * @return
-   */
-  public int getShotCoordX() {
-    return shotCoordX;
+  @NonNull
+  public Location getLocation() {
+    return location;
   }
 
-  /**
-   * Annotates the x-coordinate of this shot
-   *
-   * @param xCoord
-   */
-  public void setShotCoordX(int xCoord) {
-    this.shotCoordX = xCoord;
-  }
-
-  /**
-   * Returns the y-coordinate of this shot
-   *
-   * @return
-   */
-  public int getShotCoordY() {
-    return shotCoordY;
-  }
-
-  /**
-   * Annotates the y-coordinate of this shot
-   *
-   * @param yCoord
-   */
-  public void setShotCoordY(int yCoord) {
-    this.shotCoordY = yCoord;
+  public void setLocation(@NonNull Location location) {
+    this.location = location;
   }
 
   /**
@@ -165,8 +134,45 @@ public class Shot {
     return timestamp;
   }
 
+  public boolean isHit() {
+    return toUser
+        .getLocations()
+        .stream()
+        .anyMatch((shipLocation) -> {
+          Location loc = shipLocation.getLocation();
+          return loc.getX() == location.getX()
+              && loc.getY() == location.getY();
+        });
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
+
+  @SuppressWarnings("ConstantValue")
+  @Override
+  public boolean equals(Object obj) {
+    boolean equals;
+    if (this == obj) {
+      equals = true;
+    } else if (obj instanceof Shot other) {
+      if (this.id != null && this.id.equals(other.id)) {
+        equals = true;
+      } else if (this.id == null && other.id == null) {
+        equals = (this.toUser.equals(other.toUser)
+            && this.location.equals(other.location));
+      } else {
+        equals = false;
+      }
+    } else {
+      equals = false;
+    }
+    return equals;
+  }
+
   //public boolean isHit() {
 
-  }
+}
 
 

@@ -65,20 +65,20 @@ public class UserGame {
 
   @OneToMany(mappedBy = "userGame", fetch = FetchType.EAGER,
       cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonProperty(access = Access.READ_WRITE)
-  private List<ShipLocation> locations = new LinkedList<>();
+  @JsonIgnore
+  private final List<ShipLocation> locations = new LinkedList<>();
 
   @OneToMany(mappedBy = "fromUser", fetch = FetchType.EAGER,
       cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonProperty(access = Access.READ_WRITE)
   @JsonIgnore
-  private List<Shot> fromShots = new LinkedList<>();
+  private final List<Shot> fromShots = new LinkedList<>();
 
   @OneToMany(mappedBy = "toUser", fetch = FetchType.EAGER,
       cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonProperty(access = Access.READ_WRITE)
   @JsonIgnore
-  private List<Shot> toShots = new LinkedList<>();
+  private final List<Shot> toShots = new LinkedList<>();
 
   @OneToMany(mappedBy = "player", fetch = FetchType.LAZY)
   @OrderBy
@@ -135,6 +135,48 @@ public class UserGame {
    */
   public void setGame(@NonNull Game game) {
     this.game = game;
+  }
+
+  public List<ShipLocation> getLocations() {
+    return locations;
+  }
+
+  public List<Shot> getFromShots() {
+    return fromShots;
+  }
+
+  public List<Shot> getToShots() {
+    return toShots;
+  }
+
+  public List<ShotStatus> getShotStatuses() {
+    return shotStatuses;
+  }
+
+  public int getShipLocationCount() {
+    return locations.size();
+  }
+
+  public int getToShotHits() {
+    return (int) toShots
+        .stream()
+        .filter(Shot::isHit)
+        .distinct()
+        .count();
+  }
+
+  public boolean isFleetSunk() {
+    return getToShotHits() >= getShipLocationCount();
+  }
+
+  @JsonProperty("locations")
+  public List<ShipLocation> getExposedLocations() {
+    return isFleetSunk() ? locations : null;
+  }
+
+  @JsonProperty("myLocations")
+  public List<ShipLocation> getMyLocations() {
+    return locations;
   }
 
   @PrePersist
