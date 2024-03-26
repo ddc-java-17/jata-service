@@ -16,6 +16,15 @@ import org.hibernate.annotations.Subselect;
 @Subselect("SELECT * FROM shot_status")
 public class ShotStatus {
 
+  public ShotStatus() {
+  }
+
+  public ShotStatus(ShotStatusId id, UserGame player, boolean hit) {
+    this.id = id;
+    this.player = player;
+    this.hit = hit;
+  }
+
   @Id
   @JsonUnwrapped
   private ShotStatusId id;
