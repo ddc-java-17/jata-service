@@ -70,14 +70,12 @@ public class UserGame {
 
   @OneToMany(mappedBy = "fromUser", fetch = FetchType.EAGER,
       cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonProperty(access = Access.READ_WRITE)
   @JsonIgnore
   private final List<Shot> fromShots = new LinkedList<>();
 
   @OneToMany(mappedBy = "toUser", fetch = FetchType.EAGER,
       cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonProperty(access = Access.READ_WRITE)
-  @JsonIgnore
+  @JsonProperty(access = Access.READ_ONLY)
   private final List<Shot> toShots = new LinkedList<>();
 
   @OneToMany(mappedBy = "player", fetch = FetchType.LAZY)
